@@ -11,6 +11,7 @@
 #define VIEW_Y   0
 #define VIEW_WIDTH  [UIScreen mainScreen].bounds.size.width
 #define VIEW_HEIGHT   [UIScreen mainScreen].bounds.size.height
+#define VIEW_BOUND   300
 @interface MainViewController ()
 
 @end
@@ -40,44 +41,87 @@
 -(void)makeNavigationControllerWithRootViewController:(UIViewController*)rootViewController{
    
     _centerViewController=[[UINavigationController alloc] initWithRootViewController:rootViewController];
-    _centerViewController.view.frame=self.view.bounds;
+    
+   
+   _centerViewController.view.frame=self.view.bounds;
+    
 
     [self.view addSubview:_centerViewController.view];
    
     
     rootViewController.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"菜单" style:UIBarButtonItemStyleBordered target:self action:@selector(showLeftMenu:)];
     
-    
+    UIPanGestureRecognizer *panGestureRecognizer  = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handelPan:)];
+	[rootViewController.view addGestureRecognizer:panGestureRecognizer];
 }
 
+-(void)handelPan:(UIPanGestureRecognizer*)gestureRecognizer{
+    //获取平移手势对象在self.view的位置点，并将这个点作为self.aView的center,这样就实现了拖动的效果
+    CGPoint beginPoint;
+    CGPoint curPoint;
+  
+    
+    
+    if(gestureRecognizer.state == UIGestureRecognizerStateBegan)
+	{
+		NSLog(@"gestureRecognizer Start");
+        beginPoint= [gestureRecognizer locationInView:self.view];
+		
+	}
+	
+	else if(gestureRecognizer.state == UIGestureRecognizerStateChanged)
+	{
+		NSLog(@"gestureRecognizer Starting");
+		curPoint=[gestureRecognizer locationInView:self.view];
+        _centerViewController.view.center=CGPointMake(curPoint.x-beginPoint.x, _centerViewController.view.center.y);
+
+	}
+	
+	else if(gestureRecognizer.state == UIGestureRecognizerStateEnded)
+	{
+        NSLog(@"gestureRecognizer Startend");
+    }
+
+}
 
 -(void)showLeftMenu:(id)sender{
     
     CGRect originalRect=self.view.bounds;
-    originalRect.origin.x=200;
+    originalRect.origin.x=VIEW_BOUND;
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:0.3];
+    [UIView setAnimationCurve:UIViewAnimationCurveLinear];
     _centerViewController.view.frame=originalRect;
+    [UIView commitAnimations];
+    
     
 }
 
 
--(void)selectMenuChangeWithViewController:(UIViewController*)changeViewCOntroller{
 
-    if(changeViewCOntroller==nil){
+-(void)selectMenuChangeWithViewController:(UIViewController*)changeViewController{
+    
+    if(changeViewController==nil){
         NSLog(@"null");
         return;
         
     }
-    [_centerViewController.view removeFromSuperview ];
-    [self makeNavigationControllerWithRootViewController:changeViewCOntroller];
+    _tempViewController=changeViewController;
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:0.3];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector:@selector(animateDidStop)];
+    [UIView setAnimationCurve:UIViewAnimationCurveLinear];
+    _centerViewController.view.frame=self.view.bounds;
+    [UIView commitAnimations];
     
-    
-    
-   
-   
-
-
-
 }
+-(void)animateDidStop{
+    
+    [_centerViewController.view removeFromSuperview ];
+    [self makeNavigationControllerWithRootViewController:_tempViewController];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];

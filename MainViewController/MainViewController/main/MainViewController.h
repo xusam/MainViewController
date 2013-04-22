@@ -15,6 +15,7 @@
     UIViewController *_leftViewController;
     UIViewController *_rightViewController;
     UINavigationController *_centerViewController;
+    UIViewController *_tempViewController;
 
 }
 
