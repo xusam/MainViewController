@@ -16,6 +16,9 @@
     UIViewController *_rightViewController;
     UINavigationController *_centerViewController;
     UIViewController *_tempViewController;
+    CGPoint _beginPoint;
+   
+    CGPoint _endPoint;
 
 }
 

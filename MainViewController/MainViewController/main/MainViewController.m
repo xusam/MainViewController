@@ -11,7 +11,7 @@
 #define VIEW_Y   0
 #define VIEW_WIDTH  [UIScreen mainScreen].bounds.size.width
 #define VIEW_HEIGHT   [UIScreen mainScreen].bounds.size.height
-#define VIEW_BOUND   300
+#define VIEW_BOUND   260
 @interface MainViewController ()
 
 @end
@@ -57,23 +57,29 @@
 
 -(void)handelPan:(UIPanGestureRecognizer*)gestureRecognizer{
     //获取平移手势对象在self.view的位置点，并将这个点作为self.aView的center,这样就实现了拖动的效果
-    CGPoint beginPoint;
-    CGPoint curPoint;
+   
   
-    
+    CGPoint _curPoint;
     
     if(gestureRecognizer.state == UIGestureRecognizerStateBegan)
 	{
 		NSLog(@"gestureRecognizer Start");
-        beginPoint= [gestureRecognizer locationInView:self.view];
+        _beginPoint= [gestureRecognizer locationInView:self.view];
+        _curPoint=_centerViewController.view.center;
 		
 	}
-	
+
 	else if(gestureRecognizer.state == UIGestureRecognizerStateChanged)
 	{
 		NSLog(@"gestureRecognizer Starting");
-		curPoint=[gestureRecognizer locationInView:self.view];
-        _centerViewController.view.center=CGPointMake(curPoint.x-beginPoint.x, _centerViewController.view.center.y);
+        _endPoint=[gestureRecognizer locationInView:self.view];
+         
+    
+            _curPoint.x=_curPoint.x+_endPoint.x-_beginPoint.x;
+            _centerViewController.view.center=_curPoint;
+        NSLog(@"向左");
+      
+		
 
 	}
 	
