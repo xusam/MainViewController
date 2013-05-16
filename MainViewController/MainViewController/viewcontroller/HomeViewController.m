@@ -31,19 +31,19 @@
     self.title=@"Home";
     UIButton *btn1=[[UIButton alloc] initWithFrame:CGRectMake(10, 10, 200, 45)];
     [btn1 setTitle:@"push" forState:UIControlStateNormal];
-    [btn1 addTarget:self action:@selector(selectBtn:) forControlEvents:UIControlEventTouchUpInside];
+    [btn1 addTarget:self action:@selector(selectBtn1:) forControlEvents:UIControlEventTouchUpInside];
     btn1.tag=1;
     [self.view addSubview:btn1];
     
     UIButton *btn2=[[UIButton alloc] initWithFrame:CGRectMake(10, 80, 200, 45)];
     [btn2 setTitle:@"mode" forState:UIControlStateNormal];
-    [btn2 addTarget:self action:@selector(selectBtn:) forControlEvents:UIControlEventTouchUpInside];
+    [btn2 addTarget:self action:@selector(selectBtn2:) forControlEvents:UIControlEventTouchUpInside];
     btn1.tag=2;
     [self.view addSubview:btn2];
     
 	// Do any additional setup after loading the view.
 }
--(void)selectBtn:(UIButton*)btn{
+-(void)selectBtn1:(UIButton*)btn{
     NSLog(@"OK1");
    
              NSLog(@"OK");
@@ -52,7 +52,17 @@
             
    
 }
-
+-(void)selectBtn2:(UIButton*)btn{
+    NSLog(@"OK1");
+    
+    NSLog(@"OK");
+    
+    FristViewController * vc=[[FristViewController alloc] init];
+    UINavigationController * nav=[[UINavigationController alloc] initWithRootViewController:vc ];
+    [self.navigationController presentModalViewController:nav animated:YES];
+    
+    
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];

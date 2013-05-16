@@ -31,7 +31,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.view.backgroundColor=[UIColor redColor];
+    self.view.backgroundColor=[UIColor orangeColor];
     UIButton * btn1=[[UIButton alloc] initWithFrame:CGRectMake(10, 10, 200, 45)];
     [btn1 setTitle:@"菜单1" forState:UIControlStateNormal];
     [btn1 addTarget:self action:@selector(selectMenu:) forControlEvents:UIControlEventTouchUpInside];

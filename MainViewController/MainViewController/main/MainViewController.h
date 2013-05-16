@@ -7,6 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+//1代表只显示左 2代表只显示右 3代表左右都显示
+typedef enum {
+    MenuType_ShowLeft = 1,
+    MenuType_ShowRight = 2,
+    MenuType_ShowLeftAndRight = 3,
+} MenuType;
 
 @interface MainViewController : UIViewController
 {
@@ -16,14 +22,20 @@
     UIViewController *_rightViewController;
     UINavigationController *_centerViewController;
     UIViewController *_tempViewController;
-    CGPoint _beginPoint;
-   
-    CGPoint _endPoint;
+    CGPoint _beginPoint; 
+    CGPoint _changedPoint;
+    CGPoint _movePoint;
+    CGPoint _curPoint;
+    CGPoint _subPoint;
+    int   _clickcount;
+    MenuType  _menuType;
+    BOOL  _is_ShowLeft;
+    
 
 }
 
 
--(id)initWithCenterViewController:(UIViewController*)centerViewController LeftViewController:(UIViewController*)leftViewController RightViewController:(UIViewController*)rightViewController;
+-(id)initWithCenterViewController:(UIViewController*)centerViewController LeftViewController:(UIViewController*)leftViewController RightViewController:(UIViewController*)rightViewController menuType:(MenuType) menuType;
 
 
 -(void)selectMenuChangeWithViewController:(UIViewController*)changeViewCOntroller;

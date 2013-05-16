@@ -27,7 +27,7 @@
     LeftViewController * leftViewController=[[LeftViewController alloc] init];
     RightViewController * rightViewController=[[RightViewController  alloc] init];
     
-    MainViewController * mainViewController=[[MainViewController alloc] initWithCenterViewController:homeViewController LeftViewController:leftViewController RightViewController:rightViewController];
+    MainViewController * mainViewController=[[MainViewController alloc] initWithCenterViewController:homeViewController LeftViewController:leftViewController RightViewController:rightViewController menuType:MenuType_ShowLeftAndRight];
     
     self.window.rootViewController=mainViewController;
     
