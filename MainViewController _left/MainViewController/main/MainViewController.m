@@ -14,7 +14,8 @@
 #define VIEW_HEIGHT   [UIScreen mainScreen].bounds.size.height
 #define VIEW_BOUND   260
 #define VIEW_CENTER  160
-#define VIEW_SIDE    230
+#define VIEW_SIDE    60
+#define CenterView_Center_x 160+260
 #define MainView_width self.view.bounds.size.width
 @interface MainViewController ()
 
@@ -26,8 +27,7 @@
     self = [super init];
     if (self) {
         
-        _clickcount=0;
-        _isShowLeftMenu=NO;
+      
         _leftViewController=leftViewController;
         CGRect menuRect=self.view.bounds;
         menuRect.origin.x=-MainView_width;
@@ -52,11 +52,13 @@
     _centerViewController.view.layer.shadowRadius = 2.5f;
     _centerViewController.view.layer.shadowPath = [UIBezierPath bezierPathWithRect:_centerViewController.view.bounds].CGPath;
     
-    
+    _showMainViewBtn=[[UIButton alloc] initWithFrame:self.view.bounds];
+    [_showMainViewBtn addTarget:self action:@selector(hiddenLeftMenu) forControlEvents:UIControlEventTouchUpInside];
+    _showMainViewBtn.hidden=YES;
     [self.view addSubview:_centerViewController.view];
+    [_centerViewController.view addSubview:_showMainViewBtn];
     
-    
-    rootViewController.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"菜单" style:UIBarButtonItemStyleBordered target:self action:@selector(showLeftMenu:)];
+    rootViewController.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"菜单" style:UIBarButtonItemStyleBordered target:self action:@selector(clickLeftMenu:)];
     
     UIPanGestureRecognizer *panGestureRecognizer  = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handelPan:)];
 	[rootViewController.view addGestureRecognizer:panGestureRecognizer];
@@ -112,9 +114,10 @@
     
     CGRect  centerRect=   _centerViewController.view.frame;
     if(subPoint.x>0){
+      
         _movePoint.x=_curPoint.x+subPoint.x;
         _movePoint.y=_curPoint.y;
-        if(centerRect.origin.x<VIEW_BOUND){
+        if(_centerViewController.view.center.x<CenterView_Center_x){
             CGPoint menuPoint;
             menuPoint.x=menuPoint.x+subPoint.x;
             menuPoint.y=_curPoint.y;
@@ -131,15 +134,7 @@
  
     }else{
         
-        if(centerRect.origin.x<=VIEW_BOUND&&centerRect.origin.x>60){
-            _movePoint.x=_curPoint.x+subPoint.x;
-            _movePoint.y=_curPoint.y;
-            NSLog(@"_movePoint.x:%f",_movePoint.x);
-            _centerViewController.view.center=_movePoint;
-            
-        
-        }
-        
+               
     }
     
     
@@ -147,94 +142,75 @@
     
     
 }
+
 -(void)isShowLeftMenuWithSubPoint:(CGPoint) subPoint{
     
-    if(_centerViewController.view.center.x>VIEW_SIDE){
-        _isShowLeftMenu=YES;
-        CGRect originalRect=self.view.bounds;
-        originalRect.origin.x=VIEW_BOUND;
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.3];
-        [UIView setAnimationCurve:UIViewAnimationCurveLinear];
-        _centerViewController.view.frame=originalRect;
-        [UIView commitAnimations];
+
+    if(_centerViewController.view.frame.origin.x>VIEW_SIDE){
         
-        CGRect menuRect=self.view.bounds;
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.3];
-        [UIView setAnimationCurve:UIViewAnimationCurveLinear];
-        _leftViewController.view.frame=menuRect;
-        [UIView commitAnimations];
+        [self showLeftMenu];
         
         
     }else{
-        CGRect originalRect=self.view.bounds;
         
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.3];
-        [UIView setAnimationCurve:UIViewAnimationCurveLinear];
-        _centerViewController.view.frame=originalRect;
-        [UIView commitAnimations];
-        
-        CGRect menuRect=self.view.bounds;
-        if(_isShowLeftMenu==NO){
-        menuRect.origin.x=-VIEW_BOUND;
-        }else{
-        menuRect.origin.x=-VIEW_BOUND;
-        }
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.3];
-        [UIView setAnimationCurve:UIViewAnimationCurveLinear];
-        _leftViewController.view.frame=menuRect;
-        [UIView commitAnimations];
+        [self hiddenLeftMenu];
         
     }
     
 }
--(void)showLeftMenu:(id)sender{
+-(void)clickLeftMenu:(id)sender{
     
-    if(_clickcount==0){
-        
-        _clickcount+=1;
-        CGRect originalRect=self.view.bounds;
-        originalRect.origin.x=VIEW_BOUND;
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.3];
-        [UIView setAnimationCurve:UIViewAnimationCurveLinear];
-        _centerViewController.view.frame=originalRect;
-        [UIView commitAnimations];
-        
-        CGRect menuRect=self.view.bounds;
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.3];
-        [UIView setAnimationCurve:UIViewAnimationCurveLinear];
-        _leftViewController.view.frame=menuRect;
-        [UIView commitAnimations];
-        
-        
-        
-        
-    }else if(_clickcount==1){
-        _clickcount-=1;
-        
-        CGRect originalRect=self.view.bounds;
-        
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.3];
-        [UIView setAnimationCurve:UIViewAnimationCurveLinear];
-        _centerViewController.view.frame=originalRect;
-        [UIView commitAnimations];
-        
-        CGRect menuRect=self.view.bounds;
-        menuRect.origin.x=-MainView_width;
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:0.3];
-        [UIView setAnimationCurve:UIViewAnimationCurveLinear];
-        _leftViewController.view.frame=menuRect;
-        [UIView commitAnimations];
-        
+    if(_centerViewController.view.center.x>=CenterView_Center_x){
+    
+        [self hiddenLeftMenu];
+    
+    }else{
+    
+        [self showLeftMenu];
+    
     }
     
+}
+
+
+-(void)showLeftMenu{
+  _showMainViewBtn.hidden=NO;
+    CGRect originalRect=self.view.bounds;
+    originalRect.origin.x=VIEW_BOUND;
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:0.3];
+    [UIView setAnimationCurve:UIViewAnimationCurveLinear];
+    _centerViewController.view.frame=originalRect;
+    [UIView commitAnimations];
+    
+    CGRect menuRect=self.view.bounds;
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:0.3];
+    [UIView setAnimationCurve:UIViewAnimationCurveLinear];
+    _leftViewController.view.frame=menuRect;
+    [UIView commitAnimations];
+
+}
+
+-(void)hiddenLeftMenu{
+    _showMainViewBtn.hidden=YES;
+    CGRect originalRect=self.view.bounds;
+    
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:0.3];
+    [UIView setAnimationCurve:UIViewAnimationCurveLinear];
+    _centerViewController.view.frame=originalRect;
+    [UIView commitAnimations];
+    
+    CGRect menuRect=self.view.bounds;
+    menuRect.origin.x=-MainView_width;
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:0.3];
+    [UIView setAnimationCurve:UIViewAnimationCurveLinear];
+    _leftViewController.view.frame=menuRect;
+    [UIView commitAnimations];
+
+
 }
 
 
@@ -245,7 +221,7 @@
         return;
         
     }
-    _clickcount=0;
+   
     _tempViewController=changeViewController;
     [UIView beginAnimations:nil context:nil];
     [UIView setAnimationDuration:0.3];

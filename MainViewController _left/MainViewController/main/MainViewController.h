@@ -22,8 +22,9 @@
     CGPoint _movePoint;
     CGPoint _curPoint;
     CGPoint _subPoint;
-    int   _clickcount;
-    BOOL _isShowLeftMenu;
+   
+ 
+    UIButton  *_showMainViewBtn;
   
     
 
